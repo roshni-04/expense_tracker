@@ -1,0 +1,52 @@
+POST : http://localhost:8088/api/register/
+
+
+{
+    "username": "testuser", 
+    "password": "testpassword", 
+    "email": "test@example.com"
+}
+
+curl -X POST -H "Content-Type: application/json" -d '{"username": "testuser", "password": "testpassword", "email": "test@example.com"}' http://localhost:8088/api/register/
+
+------------------------------------------
+
+POST : http://localhost:8088/api/login/
+
+{"username": "testuser", "password": "testpassword"}
+
+
+
+{
+    "token": "db41e6cabf07e49ecd9496a2dde29058ab439509"
+}
+
+{
+    "token": "f48d4037d04086a53e367b3c938ebe854ad19788"
+}
+
+"token": "f48d4037d04086a53e367b3c938ebe854ad19788"
+Whenever a user loggs in a new token is generated and stored in DB. WIth all the subsequent request we need to pass that token to server, which will be matched against the stored token in db.
+When user loggs out the token will be removed.
+
+
+curl -X POST -H "Content-Type: application/json" -d '{"username": "testuser", "password": "testpassword"}' http://localhost:8088/api/login/
+------------------------------------------------------
+
+http://localhost:8088/api/logout/
+
+
+curl -X POST -H "Authorization: Token YOUR_AUTH_TOKEN" http://localhost:8088/api/logout/
+
+--------------------- SEARCH with keyword --------------------------------
+http://localhost:8085/api/tasker/products/?search=your_search_term
+
+
+
+
+
+
+
+
+
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]

@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %} Edit Activity {% endblock title %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Edit Activity</h1>
+    <form action="" name="activity_form" id="activity_form" method="post">
+        {% csrf_token %}
+        {% with data=activity_data %}
+        <div class="mb-3">
+            <label for="ac_name" class="form-label">Activity Name</label>
+            <input type="text" class="form-control" id="txtActName" name="txtActName" maxlength="100" tabindex="1" value="{{ data.ac_name }}">
+        </div>
+        <div class="mb-3">
+            <label for="ac_desc" class="form-label">Activity Description</label>
+            <input type="text" class="form-control" id="txtAcDesc" name="txtAcDesc" maxlength="200" tabindex="2" value="{{ data.ac_desc }}">
+        </div>
+        <div class="mb-3">
+            <label for="expense" class="form-label">Expense</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text">$</span>
+                <input type="number" step="0.01" class="form-control" id="txtExpense" name="txtExpense" tabindex="3" value="{{ data.expense }}">
+            </div>
+        </div>
+        {% comment %} <div class="mb-3">
+            <label for="a_cat" class="form-label">Category</label>
+            <select class="form-control" id="ddlCat" name="ddlCat" tabindex="4">
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if category.id == data.a_cat %} selected {% endif %}>{{ category.ac_name }}</option>
+                {% endfor %}
+            </select>
+        </div> {% endcomment %}
+
+                                                                    
+        <div class="form-group">
+            <label for="">Category</label>
+            <select class="form-control" id="ddlCat" name="ddlCat" tabindex="4">
+                {% for data in categories %}
+                <option value="{{data.url}}"> {{data.cat_name}}</option>
+                {% endfor %} 
+               
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="a_date" class="form-label">Date</label>
+            <input type="date" class="form-control" id="txtActDate" name="txtActDate" tabindex="5" value="{{ data.a_date }}">
+        </div>
+        {% endwith %}
+        <button type="button" class="btn btn-success" id="btnSave"><i class="fa fa-save"></i> Update Activity</button>
+    </form>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        $(function() {
+            $("#txtOrdNum").autocomplete({     
+                source : function(request, response) {
+                    $.ajax({
+                        url :  "/AjaxAutofill",
+                        type : "GET",
+                        data : {
+                            term : request.term,
+                            searchField : 11
+                        },
+                        dataType : "json",
+                        success : function(data) {
+                            response(data);
+                        }
+                    });
+                },
+                minLength : 3
+            });
+            
+            
+            $( "#txtActDate" ).datepicker({
+                format: "yyyy-mm-dd",
+                //endDate: 'd',  //<---- displays till date
+                autoclose: true
+            });
+            
+        });
+        
+        $("#txtOrdAmt").on("keypress keyup blur",function (event) {
+            //this.value = this.value.replace(/[^0-9\.]/g,'');
+            $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
+        
+        $('#btnSave').click(function() {
+            /*
+            if($('#txtRemark').val().length != 0){
+                var inputVal = $('#txtRemark').val();
+                alert(inputVal);
+                var re = /^[a-zA-Z 0-9\.\,\-\(\)\/\_\\]$/; // /^([a-zA-Z0-9]{0,8})$/;
+                if(!inputVal.match(re)){ //(!re.test(inputVal)) {
+                    alert('Please select a valid remark.');
+                    $('#txtRemark').focus();
+                    return false;
+                } else
+                    alert('ok');
+            } else
+                if($('#txtOrdNum').val().length == 0){
+                alert('Please provide an purchase order number.');
+                $('#txtOrdNum').focus();
+                return false;
+            } else if($('#txtOrdDt').val().length == 0){ //also check format
+                alert('Please select purchase order date.');
+                $('#txtOrdDt').focus();
+                return false;
+            } else if($('#txtOrdAmt').val().length == 0){ //also check format
+                alert('Please select a valid purchase order amount.');
+                $('#txtOrdAmt').focus();
+                return false;
+            }*/
+            
+            $("#activity_form").submit();
+	});
+        
+   });
+</script>
+{% endblock scripts %}
